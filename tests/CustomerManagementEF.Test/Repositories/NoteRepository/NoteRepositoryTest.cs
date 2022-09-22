@@ -150,5 +150,81 @@ namespace CustomerManagementEF.Test.Repositories.NoteRepository
             Assert.Equal(2,notes.Count);
         }
 
+        [Fact]
+        public void ShouldCreateActionReturnNullIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.Null(repository.Create(note));
+        }
+
+        [Fact]
+        public void ShouldReadActionReturnNullIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.Null(repository.Read(note.Id));
+        }
+
+        [Fact]
+        public void ShouldReadAllActionReturnEmptyIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.Empty(repository.ReadAll());
+        }
+
+        [Fact]
+        public void ShouldReadAllByCustomerIdActionReturnEmptyIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.Empty(repository.ReadAll(1));
+        }
+
+        [Fact]
+        public void ShouldUpdateActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.False(repository.Update(note));
+        }
+
+        [Fact]
+        public void ShouldDeleteActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+            var note = _fixture.GetNote();
+
+            Assert.False(repository.Delete(note.Id));
+        }
+
+        [Fact]
+        public void ShouldDeleteAllActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenNoteRepository();
+
+            Assert.False(repository.DeleteAll());
+        }
+
     }
 }

@@ -7,7 +7,7 @@ public class CustomerDbContext : DbContext
 {
     public CustomerDbContext(string nameOrConnectionString) : base(nameOrConnectionString) { }
 
-    public IDbSet<Customer> Customers { get; set; }
-    public IDbSet<Address> Addresses { get; set; }
-    public IDbSet<Note> Notes { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Note> Notes { get; set; }
 }

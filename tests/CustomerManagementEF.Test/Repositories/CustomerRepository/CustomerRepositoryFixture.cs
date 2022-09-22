@@ -30,5 +30,17 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
         {
             return new CustomerTestRepository();
         }
+
+        public CustomerTestRepository GetBrokenCustomerRepository()
+        {
+            var customerRepository = GetCustomerRepository();
+            customerRepository.Context = null;
+            return customerRepository;
+        }
+
+        public string GetConnectionString()
+        {
+            return "Server=localhost\\sqlexpress01;Database=CustomerLib_Levshinskii_EFTest;Trusted_Connection=true;";
+        }
     }
 }

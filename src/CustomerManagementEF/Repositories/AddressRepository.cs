@@ -1,76 +1,126 @@
-﻿using System.Data.Entity;
-using CustomerManagementEF.Contexts;
+﻿using CustomerManagementEF.Contexts;
 using CustomerManagementEF.Entities;
 using CustomerManagementEF.Interfaces;
+using System.Data.Entity;
 
 namespace CustomerManagementEF.Repositories
 {
     public class AddressRepository : BaseRepository, IRepository<Address>
     {
+        public AddressRepository() { }
+        public AddressRepository(CustomerDbContext context) : base(context) { }
+
         public Address? Create(Address entity)
         {
-            var createdEntity=Context.Addresses.Add(entity);
-
-            Context.SaveChanges();
-
-            return createdEntity;
+            try
+            {
+                var createdEntity = Context.Addresses.Add(entity);
+                Context.SaveChanges();
+                return createdEntity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         public Address? Read(int entityId)
         {
-            var entities=Context.Addresses.Where(x => x.AddressId == entityId).ToList();
-
-            if (entities.Count>0)
+            try
             {
-                return entities[0];
+                var entities = Context.Addresses.Where(x => x.AddressId == entityId).ToList();
+                if (entities.Count > 0)
+                {
+                    return entities[0];
+                }
+                return null;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         public List<Address> ReadAll()
         {
-            return Context.Addresses.ToList();
+            try
+            {
+                return Context.Addresses.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<Address>();
+            }
         }
 
         public List<Address> ReadAll(int entityId)
         {
-            return Context.Addresses.Where(x=>x.CustomerId==entityId).ToList();
+            try
+            {
+                return Context.Addresses.Where(x => x.CustomerId == entityId).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<Address>();
+            }
         }
 
         public bool Update(Address entity)
         {
-            if (Read(entity.AddressId) != null)
+            try
             {
                 Context.Entry(entity).State = EntityState.Modified;
                 Context.SaveChanges();
+
                 return true;
             }
-
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public bool Delete(int entityId)
         {
-            var entityToDelete = Context.Addresses.FirstOrDefault(x => x.AddressId == entityId);
-            if (entityToDelete != null)
+            try
             {
-                Context.Addresses.Remove(entityToDelete);
+                Context.Addresses.Remove(Read(entityId) ?? throw new InvalidOperationException());
                 Context.SaveChanges();
                 return true;
+
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public bool DeleteAll()
         {
-            var entitiesToDelete = Context.Addresses.ToList();
-            foreach (var address in entitiesToDelete)
+            try
             {
-                Context.Addresses.Remove(address);
+                var entitiesToDelete = Context.Addresses.ToList();
+                foreach (var customer in entitiesToDelete)
+                {
+                    Context.Addresses.Remove(customer);
+                }
+
+                Context.SaveChanges();
+                return true;
             }
-            Context.SaveChanges();
-            return true;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
+
+
     }
 }

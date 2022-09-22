@@ -1,3 +1,4 @@
+using CustomerManagementEF.Contexts;
 using CustomerManagementEF.Entities;
 
 namespace CustomerManagementEF.Test.Repositories.CustomerRepository
@@ -9,7 +10,7 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
         [Fact]
         public void ShouldBeAbleToCreateCustomerRepo()
         {
-            var repository = new CustomerManagementEF.Repositories.CustomerRepository();
+            var repository = new CustomerManagementEF.Repositories.CustomerRepository(new CustomerDbContext(_fixture.GetConnectionString()));
             Assert.NotNull(repository);
         }
 
@@ -19,7 +20,7 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
             _fixture.ClearDb();
 
             var repository = _fixture.GetCustomerRepository();
-            
+
 
             Customer customer = _fixture.GetCustomer();
 
@@ -46,6 +47,7 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
             Assert.Equal(createdCustomer.Email, readedCustomer.Email);
             Assert.Equal(createdCustomer.PhoneNumber, readedCustomer.PhoneNumber);
             Assert.Equal(createdCustomer.TotalPurchasesAmount, readedCustomer.TotalPurchasesAmount);
+
         }
 
         [Fact]
@@ -58,8 +60,8 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
 
             var createdCustomer = repository.Create(customer);
 
-            var oldEmail= customer.Email;
-            var newEmail= "newemail@email.com";
+            var oldEmail = customer.Email;
+            var newEmail = "newemail@email.com";
 
             createdCustomer!.Email = newEmail;
 
@@ -118,20 +120,6 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
         }
 
         [Fact]
-        public void ShouldUpdateReturnsFalseIfNoLinesAffected()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetCustomerRepository();
-
-            var customer = _fixture.GetCustomer();
-
-            customer.FirstName = "new first name";
-
-            Assert.False(repository.Update(customer));
-        }
-
-        [Fact]
         public void ShouldDeleteReturnsFalseIfNoLinesAffected()
         {
             _fixture.ClearDb();
@@ -141,6 +129,71 @@ namespace CustomerManagementEF.Test.Repositories.CustomerRepository
             var customer = _fixture.GetCustomer();
 
             Assert.False(repository.Delete(customer.Id));
+        }
+
+        [Fact]
+        public void ShouldCreateActionReturnNullIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+            var customer = _fixture.GetCustomer();
+
+            Assert.Null(repository.Create(customer));
+        }
+
+        [Fact]
+        public void ShouldReadActionReturnNullIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+            var customer = _fixture.GetCustomer();
+
+            Assert.Null(repository.Read(customer.Id));
+        }
+
+        [Fact]
+        public void ShouldReadAllActionReturnEmptyIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+            var customer = _fixture.GetCustomer();
+
+            Assert.Empty(repository.ReadAll());
+        }
+
+        [Fact]
+        public void ShouldUpdateActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+            var customer = _fixture.GetCustomer();
+
+            Assert.False(repository.Update(customer));
+        }
+
+        [Fact]
+        public void ShouldDeleteActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+            var customer = _fixture.GetCustomer();
+
+            Assert.False(repository.Delete(customer.Id));
+        }
+
+        [Fact]
+        public void ShouldDeleteAllActionReturnFalseIfExceptionThrown()
+        {
+            _fixture.ClearDb();
+
+            var repository = _fixture.GetBrokenCustomerRepository();
+
+            Assert.False(repository.DeleteAll());
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using CustomerManagementEF.Entities;
 using Moq;
 
-namespace CustomerManagementEF.Test.Services.CustomerService;
+namespace CustomerManagementEF.Test.Services;
 
 public class CustomerServiceTest
 {
-    private readonly CustomerServiceFixture _fixture = new();
+    private readonly ServiceTestFixture _fixture = new();
 
     [Fact]
     public void ShouldBeAbleToCreateService()
@@ -71,14 +71,6 @@ public class CustomerServiceTest
     }
 
     [Fact]
-    public void ShouldThrowExceptionWhenArgumentOutOfRangeInGetCustomer()
-    {
-        var service = _fixture.GetCustomerService();
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => service.Get(-1));
-    }
-
-    [Fact]
     public void ShouldGetActionReturnNullIfCanNotFindCustomerInRepo()
     {
         var customerRepoMock = _fixture.GetCustomerRepositoryMock();
@@ -91,48 +83,40 @@ public class CustomerServiceTest
     }
 
     [Fact]
-    public void ShouldServiceThrowExceptionIfThereNoCustomerToUpdate()
+    public void ShouldUpdateActionReturnFalseIfCustomerRepoUpdateErrors()
     {
+        var customer = _fixture.GetCustomer();
         var customerRepoMock = _fixture.GetCustomerRepositoryMock();
-        Customer? customerNull = null;
-        customerRepoMock.Setup(x => x.Read(It.IsAny<int>())).Returns(customerNull);
+        customerRepoMock.Setup(x => x.Update(customer)).Returns(false);
 
         var service = _fixture.GetCustomerService(customerRepoMock.Object);
 
-        Assert.Throws<InvalidOperationException>(() => service.Update(_fixture.GetCustomer()));
+        Assert.False(service.Update(customer));
     }
 
     [Fact]
-    public void ShouldThrowExceptionWhenCanNotUpdateAddress()
+    public void ShouldUpdateActionReturnFalseIfAddressRepoUpdateErrors()
     {
+        var customer = _fixture.GetCustomer();
+        var address = customer.Addresses.First();
         var addressRepositoryMock = _fixture.GetAddressRepositoryMock();
-        addressRepositoryMock.Setup(x => x.Update(It.IsAny<Address>())).Returns(false);
+        addressRepositoryMock.Setup(x => x.Update(address)).Returns(false);
 
         var service = _fixture.GetCustomerService(null, addressRepositoryMock.Object);
 
-        Assert.Throws<InvalidOperationException>(() => service.Update(_fixture.GetCustomer()));
+        Assert.False(service.Update(customer));
     }
 
     [Fact]
-    public void ShouldThrowExceptionWhenCanNotUpdateNote()
+    public void ShouldUpdateActionReturnFalseIfNoteRepoUpdateErrors()
     {
+        var customer = _fixture.GetCustomer();
+        var note = customer.Notes.First();
         var noteRepositoryMock = _fixture.GetNoteRepositoryMock();
-        noteRepositoryMock.Setup(x => x.Update(It.IsAny<Note>())).Returns(false);
+        noteRepositoryMock.Setup(x => x.Update(note)).Returns(false);
 
-        var service = _fixture.GetCustomerService(null, null, noteRepositoryMock.Object);
+        var service = _fixture.GetCustomerService(null, null,noteRepositoryMock.Object);
 
-        Assert.Throws<InvalidOperationException>(() => service.Update(_fixture.GetCustomer()));
-    }
-
-    [Fact]
-    public void ShouldServiceThrowExceptionIfThereNoCustomerToDelete()
-    {
-        var customerRepoMock = _fixture.GetCustomerRepositoryMock();
-        Customer? customerNull = null;
-        customerRepoMock.Setup(x => x.Read(It.IsAny<int>())).Returns(customerNull);
-
-        var service = _fixture.GetCustomerService(customerRepoMock.Object);
-
-        Assert.Throws<InvalidOperationException>(() => service.Delete(_fixture.GetCustomer().Id));
+        Assert.False(service.Update(customer));
     }
 }

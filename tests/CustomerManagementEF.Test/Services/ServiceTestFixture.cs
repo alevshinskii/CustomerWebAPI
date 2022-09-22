@@ -2,10 +2,9 @@
 using CustomerManagementEF.Interfaces;
 using Moq;
 
-namespace CustomerManagementEF.Test.Services.CustomerService;
+namespace CustomerManagementEF.Test.Services;
 
-
-public class CustomerServiceFixture
+public class ServiceTestFixture
 {
     public Customer GetCustomer()
     {
@@ -15,29 +14,39 @@ public class CustomerServiceFixture
             LastName = "NewCustomer",
             Notes = new List<Note>()
             {
-                new Note()
-                {
-                    CustomerId = 1,
-                    Id = 1,
-                    Text = "new note"
-                }
+                GetNote()
             },
             Addresses = new List<Address>()
             {
-                new Address()
-                {
-                    AddressId = 1,
-                    AddressLine = "new address line",
-                    CustomerId = 1
-                }
+                GetAddress()
             }
         };
     }
 
-    public CustomerManagementEF.Services.CustomerService GetCustomerService(IRepository<Customer>? customerRepository=null,
-        IRepository<Address>? addressRepository=null,IRepository<Note>? noteRepository=null)
+    public Address GetAddress()
     {
-        
+        return new Address()
+        {
+            AddressId = 1,
+            AddressLine = "AddressLine",
+            CustomerId = 1
+        };
+    }
+
+    public Note GetNote()
+    {
+        return new Note()
+        {
+            Id = 1,
+            Text = "Text",
+            CustomerId = 1
+        };
+    }
+
+    public CustomerManagementEF.Services.CustomerService GetCustomerService(IRepository<Customer>? customerRepository = null,
+        IRepository<Address>? addressRepository = null, IRepository<Note>? noteRepository = null)
+    {
+
         if (customerRepository == null)
         {
             customerRepository = GetCustomerRepositoryMock().Object;
@@ -52,9 +61,29 @@ public class CustomerServiceFixture
         {
             noteRepository = GetNoteRepositoryMock().Object;
         }
-        
+
 
         return new CustomerManagementEF.Services.CustomerService(customerRepository, addressRepository, noteRepository);
+    }
+
+    public CustomerManagementEF.Services.AddressService GetAddressService(IRepository<Address>? addressRepository = null)
+    {
+        if (addressRepository == null)
+        {
+            addressRepository = GetAddressRepositoryMock().Object;
+        }
+
+        return new CustomerManagementEF.Services.AddressService(addressRepository);
+    }
+
+    public CustomerManagementEF.Services.NoteService GetNoteService(IRepository<Note>? noteRepository = null)
+    {
+        if (noteRepository == null)
+        {
+            noteRepository = GetNoteRepositoryMock().Object;
+        }
+
+        return new CustomerManagementEF.Services.NoteService(noteRepository);
     }
 
     public Mock<IRepository<Customer>> GetCustomerRepositoryMock()
@@ -72,34 +101,29 @@ public class CustomerServiceFixture
 
     public Mock<IRepository<Address>> GetAddressRepositoryMock()
     {
-        var address = GetCustomer().Addresses[0];
+        var address = GetAddress();
         var addressRepositoryMock = new Mock<IRepository<Address>>();
         addressRepositoryMock.Setup(x => x.Create(It.IsAny<Address>())).Returns(address);
         addressRepositoryMock.Setup(x => x.Delete(It.IsAny<int>())).Returns(true);
         addressRepositoryMock.Setup(x => x.Update(It.IsAny<Address>())).Returns(true);
         addressRepositoryMock.Setup(x => x.Read(It.IsAny<int>())).Returns(address);
         addressRepositoryMock.Setup(x => x.ReadAll(It.IsAny<int>())).Returns(new List<Address>() { address });
+        addressRepositoryMock.Setup(x => x.ReadAll()).Returns(new List<Address>() { address });
 
         return addressRepositoryMock;
     }
 
     public Mock<IRepository<Note>> GetNoteRepositoryMock()
     {
-        var note = GetCustomer().Notes[0];
+        var note = GetNote();
         var noteRepositoryMock = new Mock<IRepository<Note>>();
         noteRepositoryMock.Setup(x => x.Create(It.IsAny<Note>())).Returns(note);
         noteRepositoryMock.Setup(x => x.Delete(It.IsAny<int>())).Returns(true);
         noteRepositoryMock.Setup(x => x.Update(It.IsAny<Note>())).Returns(true);
         noteRepositoryMock.Setup(x => x.Read(It.IsAny<int>())).Returns(note);
         noteRepositoryMock.Setup(x => x.ReadAll(It.IsAny<int>())).Returns(new List<Note>() { note });
+        noteRepositoryMock.Setup(x => x.ReadAll()).Returns(new List<Note>() { note });
 
         return noteRepositoryMock;
-    }
-
-    public Customer? GetCustomerNull()
-    {
-        Customer? customer = null;
-
-        return customer;
     }
 }

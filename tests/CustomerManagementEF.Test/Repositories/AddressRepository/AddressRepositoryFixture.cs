@@ -1,4 +1,5 @@
-﻿using CustomerManagementEF.Entities;
+﻿using CustomerManagementEF.Contexts;
+using CustomerManagementEF.Entities;
 using CustomerManagementEF.Test.Repositories.CustomerRepository;
 
 namespace CustomerManagementEF.Test.Repositories.AddressRepository
@@ -25,7 +26,7 @@ namespace CustomerManagementEF.Test.Repositories.AddressRepository
                 AddressType = "Shipping",
                 City = "New York",
                 Country = "United States",
-                CustomerId = customer.Id,
+                CustomerId = customer!.Id,
                 PostalCode = "123456",
                 State = "New York"
             };
@@ -34,6 +35,13 @@ namespace CustomerManagementEF.Test.Repositories.AddressRepository
         public AddressTestRepository GetAddressRepository()
         {
             return new AddressTestRepository();
+        }
+
+        public AddressTestRepository GetBrokenAddressRepository()
+        {
+            var addressRepo= new AddressTestRepository();
+            addressRepo.Context = null;
+            return addressRepo;
         }
     }
 }

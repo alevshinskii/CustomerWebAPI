@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using CustomerManagementEF.Contexts;
+﻿using CustomerManagementEF.Contexts;
 using CustomerManagementEF.Entities;
 
 namespace CustomerManagementEF.Repositories
@@ -7,6 +6,11 @@ namespace CustomerManagementEF.Repositories
     public abstract class BaseRepository
     {
         public CustomerDbContext Context;
+        
+        public BaseRepository(CustomerDbContext context)
+        {
+            Context = context;
+        }
 
         protected BaseRepository()
         {

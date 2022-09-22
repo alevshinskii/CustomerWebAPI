@@ -20,7 +20,7 @@ namespace CustomerManagementEF.Test.Repositories.NoteRepository
             return new Note()
             {
                 Id = 1,
-                CustomerId = customer.Id,
+                CustomerId = customer!.Id,
                 Text = "Some text"
             };
         }
@@ -28,6 +28,13 @@ namespace CustomerManagementEF.Test.Repositories.NoteRepository
         public NoteTestRepository GetNoteRepository()
         {
             return new NoteTestRepository();
+        }
+
+        public NoteTestRepository GetBrokenNoteRepository()
+        {
+            var noteRepository = GetNoteRepository();
+            noteRepository.Context = null;
+            return noteRepository;
         }
     }
 }

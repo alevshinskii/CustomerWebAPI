@@ -1,35 +1,60 @@
-﻿using System.Data.Entity;
+﻿using CustomerManagementEF.Contexts;
 using CustomerManagementEF.Entities;
 using CustomerManagementEF.Interfaces;
+using System.Data.Entity;
 
 namespace CustomerManagementEF.Repositories
 {
     public class CustomerRepository : BaseRepository, IRepository<Customer>
     {
+        public CustomerRepository(CustomerDbContext context) : base(context) { }
+
+        protected CustomerRepository() { }
+
         public Customer? Create(Customer entity)
         {
-            var createdEntity = Context.Customers.Add(entity);
-
-            Context.SaveChanges();
-
-            return createdEntity;
+            try
+            {
+                var createdEntity = Context.Customers.Add(entity);
+                Context.SaveChanges();
+                return createdEntity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         public Customer? Read(int entityId)
         {
-            var entities=Context.Customers.Where(x => x.Id == entityId).ToList();
-
-            if (entities.Count>0)
+            try
             {
-                return entities[0];
+                var entities = Context.Customers.Where(x => x.Id == entityId).ToList();
+                if (entities.Count > 0)
+                {
+                    return entities[0];
+                }
+                return null;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         public List<Customer> ReadAll()
         {
-            return Context.Customers.ToList();
+            try
+            {
+                return Context.Customers.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<Customer>();
+            }
         }
 
         public List<Customer> ReadAll(int entityId)
@@ -39,38 +64,53 @@ namespace CustomerManagementEF.Repositories
 
         public bool Update(Customer entity)
         {
-            if (Read(entity.Id) != null)
+            try
             {
                 Context.Entry(entity).State = EntityState.Modified;
-
                 Context.SaveChanges();
 
                 return true;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public bool Delete(int entityId)
         {
-            var entity = Read(entityId);
-            if (entity != null)
+            try
             {
-                Context.Customers.Remove(entity);
+                Context.Customers.Remove(Read(entityId));
                 Context.SaveChanges();
                 return true;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public bool DeleteAll()
         {
-            var entitiesToDelete = Context.Customers.ToList();
-            foreach (var customer in entitiesToDelete)
+            try
             {
-                Context.Customers.Remove(customer);
+                var entitiesToDelete = Context.Customers.ToList();
+                foreach (var customer in entitiesToDelete)
+                {
+                    Context.Customers.Remove(customer);
+                }
+
+                Context.SaveChanges();
+                return true;
             }
-            Context.SaveChanges();
-            return true;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
     }
 

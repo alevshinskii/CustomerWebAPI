@@ -1,16 +1,27 @@
 ﻿using CustomerManagementEF.Entities;
 using CustomerManagementEF.Interfaces;
 using CustomerManagementEF.Repositories;
+using System.Net;
+using CustomerManagementEF.Contexts;
 
 namespace CustomerManagementEF.Services;
 
 public class CustomerService : IService<Customer>
 {
-    private readonly IRepository<Customer> _customerRepository = new CustomerRepository();
-    private readonly IRepository<Address> _addressRepository = new AddressRepository();
-    private readonly IRepository<Note> _noteRepository = new NoteRepository();
+    private readonly IRepository<Customer> _customerRepository;
+    private readonly IRepository<Address> _addressRepository;
+    private readonly IRepository<Note> _noteRepository;
 
-    public CustomerService() { }
+    private string _connectionString =
+        "Server=localhost\\sqlexpress01;Database=CustomerLib_Levshinskii_EF;Trusted_Connection=true;";
+    
+    public CustomerService()
+    {
+        var context = new CustomerDbContext(_connectionString);
+        _customerRepository = new CustomerRepository(context);
+        _addressRepository = new AddressRepository(context);
+        _noteRepository = new NoteRepository(context);
+    }
 
     public CustomerService(IRepository<Customer> customerRepository, IRepository<Address>? addressRepository = null, IRepository<Note>? noteRepository = null)
     {
@@ -18,14 +29,9 @@ public class CustomerService : IService<Customer>
         _addressRepository = addressRepository ?? new AddressRepository();
         _noteRepository = noteRepository ?? new NoteRepository();
     }
-
+    
     public Customer? Get(int entityId)
     {
-        if (entityId < 0)
-        {
-            throw new ArgumentOutOfRangeException($"Entity Id can not be < 0, actual: {entityId}");
-        }
-
         var customer = _customerRepository.Read(entityId);
 
         if (customer == null)
@@ -40,75 +46,34 @@ public class CustomerService : IService<Customer>
 
     public Customer? Create(Customer entity)
     {
-        var createdCustomer = _customerRepository.Create(entity);
-        if (createdCustomer != null)
-        {
-            foreach (var address in entity.Addresses)
-            {
-                var createdAddress = _addressRepository.Create(address);
-                if (createdAddress != null)
-                    createdCustomer.Addresses.Add(createdAddress);
-            }
-
-            foreach (var note in entity.Notes)
-            {
-                var createdNote = _noteRepository.Create(note);
-                if (createdNote != null)
-                    createdCustomer.Notes.Add(createdNote);
-            }
-        }
-
-        return createdCustomer;
+        return _customerRepository.Create(entity);
     }
 
     public bool Update(Customer customer)
     {
-        var customerToUpdate = Get(customer.Id);
+        bool isUpdated = true;
 
-        if (customerToUpdate == null)
+        foreach (var address in customer.Addresses)
         {
-            throw new InvalidOperationException($"Can't find customer with id {customer.Id} in db to update");
+            if (!_addressRepository.Update(address))
+                isUpdated = false;
         }
 
-        foreach (var customerAddress in customer.Addresses)
+        foreach (var note in customer.Notes)
         {
-            if (!_addressRepository.Update(customerAddress))
-            {
-                throw new InvalidOperationException($"Can't update address {customerAddress.AddressLine}");
-            }
+            if (!_noteRepository.Update(note))
+                isUpdated = false;
         }
 
-        foreach (var customerNote in customer.Notes)
-        {
-            if (!_noteRepository.Update(customerNote))
-            {
-                throw new InvalidOperationException($"Can't update note {customerNote.Text}");
-            }
-        }
+        if (!_customerRepository.Update(customer))
+            isUpdated = false;
 
-        return _customerRepository.Update(customer);
+        return isUpdated;
     }
 
     public bool Delete(int entityId)
     {
-        var customerToDelete = Get(entityId);
-
-        if (customerToDelete == null)
-        {
-            throw new InvalidOperationException($"Can't find customer with id {entityId}");
-        }
-
-        foreach (var note in customerToDelete.Notes)
-        {
-            _noteRepository.Delete(note.Id);
-        }
-
-        foreach (var address in customerToDelete.Addresses)
-        {
-            _addressRepository.Delete(address.AddressId);
-        }
-
-        return _customerRepository.Delete(customerToDelete.Id);
+        return _customerRepository.Delete(entityId);
     }
 
     public List<Customer> GetAll()
