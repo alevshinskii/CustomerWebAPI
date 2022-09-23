@@ -80,7 +80,7 @@ namespace CustomerWebAPI.Test
         public void ShouldCreateCustomerReturnNoContentIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenCustomerController();
+            var controller = _fixture.GetAltCustomerController();
 
             var result = controller.Create(customer);
 
@@ -92,7 +92,7 @@ namespace CustomerWebAPI.Test
         public void ShouldGetCustomerReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenCustomerController();
+            var controller = _fixture.GetAltCustomerController();
 
             var result = controller.Get(customer.Id);
 
@@ -104,7 +104,7 @@ namespace CustomerWebAPI.Test
         public void ShouldGetAllCustomersReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenCustomerController();
+            var controller = _fixture.GetAltCustomerController();
 
             var result = controller.GetAll();
 
@@ -115,7 +115,7 @@ namespace CustomerWebAPI.Test
         public void ShouldDeleteCustomerReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenCustomerController();
+            var controller = _fixture.GetAltCustomerController();
 
             var result = controller.Delete(customer.Id);
 
@@ -126,11 +126,66 @@ namespace CustomerWebAPI.Test
         public void ShouldUpdateCustomerReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenCustomerController();
+            var controller = _fixture.GetAltCustomerController();
 
             var result = controller.Update(customer);
 
             result.Should().BeAssignableTo<NotFoundObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldGetCustomerActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var controller = _fixture.GetBrokenCustomerController();
+
+            var result = controller.Get(customer.Id);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldCreateCustomerActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var controller = _fixture.GetBrokenCustomerController();
+
+            var result = controller.Create(customer);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldGetAllCustomersActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var controller = _fixture.GetBrokenCustomerController();
+
+            var result = controller.GetAll();
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldUpdateCustomerActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var controller = _fixture.GetBrokenCustomerController();
+
+            var result = controller.Update(customer);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldDeleteCustomerActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var controller = _fixture.GetBrokenCustomerController();
+
+            var result = controller.Delete(customer.Id);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
     }
 }

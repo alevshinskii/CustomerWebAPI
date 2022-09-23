@@ -82,7 +82,7 @@ public class NoteControllerTest
         public void ShouldCreateNoteReturnNoContentIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenNoteController();
+            var controller = _fixture.GetAltNoteController();
             var note = customer.Notes[0];
 
             var result = controller.Create(note);
@@ -92,10 +92,10 @@ public class NoteControllerTest
 
     
         [Fact]
-        public void ShouldGetCustomerReturnNotFoundIfServiceError()
+        public void ShouldGetNoteReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenNoteController();
+            var controller = _fixture.GetAltNoteController();
             var note = customer.Notes[0];
 
             var result = controller.Get(note.Id);
@@ -104,10 +104,10 @@ public class NoteControllerTest
         }
 
         [Fact]
-        public void ShouldGetAllCustomersReturnNotFoundIfServiceError()
+        public void ShouldGetAllNotesReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenNoteController();
+            var controller = _fixture.GetAltNoteController();
 
             var result = controller.GetAll();
 
@@ -115,10 +115,10 @@ public class NoteControllerTest
         }
 
         [Fact]
-        public void ShouldDeleteCustomerReturnNotFoundIfServiceError()
+        public void ShouldDeleteNoteReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenNoteController();
+            var controller = _fixture.GetAltNoteController();
             var note = customer.Notes[0];
 
             var result = controller.Delete(note.Id);
@@ -127,14 +127,74 @@ public class NoteControllerTest
         }
 
         [Fact]
-        public void ShouldUpdateCustomerReturnNotFoundIfServiceError()
+        public void ShouldUpdateNoteReturnNotFoundIfServiceError()
         {
             var customer=_fixture.CreateCustomer();
-            var controller = _fixture.GetBrokenNoteController();
+            var controller = _fixture.GetAltNoteController();
             var note = customer.Notes[0];
 
             var result = controller.Update(note);
 
             result.Should().BeAssignableTo<NotFoundObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldGetNoteActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var note= customer.Notes[0];
+            var controller = _fixture.GetBrokenNoteController();
+
+            var result = controller.Get(note.Id);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldCreateNoteActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var note= customer.Notes[0];
+            var controller = _fixture.GetBrokenNoteController();
+
+            var result = controller.Create(note);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldGetAllNotesActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var note= customer.Notes[0];
+            var controller = _fixture.GetBrokenNoteController();
+
+            var result = controller.GetAll();
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldUpdateNoteActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var note= customer.Notes[0];
+            var controller = _fixture.GetBrokenNoteController();
+
+            var result = controller.Update(note);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public void ShouldDeleteNoteActionReturnBadRequestIfServiceError()
+        {
+            var customer=_fixture.CreateCustomer();
+            var note= customer.Notes[0];
+            var controller = _fixture.GetBrokenNoteController();
+
+            var result = controller.Delete(note.Id);
+
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
 }

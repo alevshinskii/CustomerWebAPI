@@ -13,48 +13,24 @@ namespace CustomerManagementEF.Repositories
 
         public Customer? Create(Customer entity)
         {
-            try
-            {
-                var createdEntity = Context.Customers.Add(entity);
-                Context.SaveChanges();
-                return createdEntity;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
+            var createdEntity = Context.Customers.Add(entity);
+            Context.SaveChanges();
+            return createdEntity;
         }
 
         public Customer? Read(int entityId)
         {
-            try
+            var entities = Context.Customers.Where(x => x.Id == entityId).ToList();
+            if (entities.Count > 0)
             {
-                var entities = Context.Customers.Where(x => x.Id == entityId).ToList();
-                if (entities.Count > 0)
-                {
-                    return entities[0];
-                }
-                return null;
+                return entities[0];
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
+            return null;
         }
 
         public List<Customer> ReadAll()
         {
-            try
-            {
-                return Context.Customers.ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return new List<Customer>();
-            }
+            return Context.Customers.ToList();
         }
 
         public List<Customer> ReadAll(int entityId)
@@ -64,53 +40,29 @@ namespace CustomerManagementEF.Repositories
 
         public bool Update(Customer entity)
         {
-            try
-            {
-                Context.Entry(entity).State = EntityState.Modified;
-                Context.SaveChanges();
+            Context.Entry(entity).State = EntityState.Modified;
+            Context.SaveChanges();
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            return true;
         }
 
         public bool Delete(int entityId)
         {
-            try
-            {
-                Context.Customers.Remove(Read(entityId));
-                Context.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            Context.Customers.Remove(Read(entityId));
+            Context.SaveChanges();
+            return true;
         }
 
         public bool DeleteAll()
         {
-            try
+            var entitiesToDelete = Context.Customers.ToList();
+            foreach (var customer in entitiesToDelete)
             {
-                var entitiesToDelete = Context.Customers.ToList();
-                foreach (var customer in entitiesToDelete)
-                {
-                    Context.Customers.Remove(customer);
-                }
+                Context.Customers.Remove(customer);
+            }
 
-                Context.SaveChanges();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            Context.SaveChanges();
+            return true;
         }
     }
 

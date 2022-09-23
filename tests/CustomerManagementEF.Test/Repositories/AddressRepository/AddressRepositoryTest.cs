@@ -88,29 +88,6 @@ namespace CustomerManagementEF.Test.Repositories.AddressRepository
 
             Assert.Null(readedAddress);
         }
-        [Fact]
-        public void ShouldUpdateReturnsFalseIfNoLinesAffected()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetAddressRepository();
-            Address address = _fixture.GetAddress();
-
-            address.AddressLine2 = "new address line";
-
-            Assert.False(repository.Update(address));
-        }
-
-        [Fact]
-        public void ShouldDeleteReturnsFalseIfNoLinesAffected()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetAddressRepository();
-            Address address = _fixture.GetAddress();
-
-            Assert.False(repository.Delete(address.AddressId));
-        }
 
         [Fact]
         public void ShouldBeAbleToReadAllAddressesById()
@@ -147,73 +124,5 @@ namespace CustomerManagementEF.Test.Repositories.AddressRepository
             Assert.Equal(2,addresses.Count);
         }
 
-        [Fact]
-        public void ShouldReadAllAddressesReturnFalseIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            var addresses = repository.ReadAll();
-
-            Assert.Empty(addresses);
-        }
-
-        [Fact]
-        public void ShouldReadAllAddressesByCustomerIdReturnFalseIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            var addresses = repository.ReadAll(1);
-
-            Assert.Empty(addresses);
-        }
-
-        [Fact]
-        public void ShouldCreateAddressActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            Address address = _fixture.GetAddress();
-            var createdAddress = repository.Create(address);
-
-            Assert.Null(createdAddress);
-        }
-
-        [Fact]
-        public void ShouldReadAddressActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            Address address = _fixture.GetAddress();
-            var readAddress = repository.Read(address.AddressId);
-
-            Assert.Null(readAddress);
-        }
-
-        [Fact]
-        public void ShouldDeleteAddressActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            Address address = _fixture.GetAddress();
-            var readAddress = repository.Delete(address.AddressId);
-
-            Assert.False(readAddress);
-        }
-
-        [Fact]
-        public void ShouldDeleteAllAddressesActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenAddressRepository();
-            var readAddress = repository.DeleteAll();
-
-            Assert.False(readAddress);
-        }
     }
 }

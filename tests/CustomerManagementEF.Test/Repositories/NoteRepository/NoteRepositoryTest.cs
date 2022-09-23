@@ -84,37 +84,6 @@ namespace CustomerManagementEF.Test.Repositories.NoteRepository
         }
 
         [Fact]
-        public void ShouldUpdateReturnsFalseIfNoLinesAffected()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetNoteRepository();
-            Note note = _fixture.GetNote();
-
-            repository.Create(note);
-
-            note.Text = "new text";
-            note.Id = 0;
-
-            Assert.False(repository.Update(note));
-        }
-
-        [Fact]
-        public void ShouldDeleteReturnsFalseIfNoLinesAffected()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetNoteRepository();
-            Note note = _fixture.GetNote();
-
-            repository.Create(note);
-
-            note.Text = "new text";
-
-            Assert.False(repository.Delete(0));
-        }
-
-        [Fact]
 
         public void ShouldBeAbleToReadAllNotes()
         {
@@ -148,82 +117,6 @@ namespace CustomerManagementEF.Test.Repositories.NoteRepository
 
             Assert.NotEmpty(notes);
             Assert.Equal(2,notes.Count);
-        }
-
-        [Fact]
-        public void ShouldCreateActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.Null(repository.Create(note));
-        }
-
-        [Fact]
-        public void ShouldReadActionReturnNullIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.Null(repository.Read(note.Id));
-        }
-
-        [Fact]
-        public void ShouldReadAllActionReturnEmptyIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.Empty(repository.ReadAll());
-        }
-
-        [Fact]
-        public void ShouldReadAllByCustomerIdActionReturnEmptyIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.Empty(repository.ReadAll(1));
-        }
-
-        [Fact]
-        public void ShouldUpdateActionReturnFalseIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.False(repository.Update(note));
-        }
-
-        [Fact]
-        public void ShouldDeleteActionReturnFalseIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-            var note = _fixture.GetNote();
-
-            Assert.False(repository.Delete(note.Id));
-        }
-
-        [Fact]
-        public void ShouldDeleteAllActionReturnFalseIfExceptionThrown()
-        {
-            _fixture.ClearDb();
-
-            var repository = _fixture.GetBrokenNoteRepository();
-
-            Assert.False(repository.DeleteAll());
         }
 
     }

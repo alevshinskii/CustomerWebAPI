@@ -102,7 +102,7 @@ public class AddressControllerTest
     {
         var customer=_fixture.CreateCustomer();
         var address = _fixture.GetAddress();
-        var controller = _fixture.GetBrokenAddressController();
+        var controller = _fixture.GetAltAddressController();
 
         var result = controller.Create(address);
 
@@ -115,7 +115,7 @@ public class AddressControllerTest
     {
         var customer=_fixture.CreateCustomer();
         var address = _fixture.GetAddress();
-        var controller = _fixture.GetBrokenAddressController();
+        var controller = _fixture.GetAltAddressController();
 
         var result = controller.Get(address.AddressId);
 
@@ -128,7 +128,7 @@ public class AddressControllerTest
     {
         var customer=_fixture.CreateCustomer();
         var address = _fixture.GetAddress();
-        var controller = _fixture.GetBrokenAddressController();
+        var controller = _fixture.GetAltAddressController();
 
         var result = controller.GetAll();
 
@@ -140,7 +140,7 @@ public class AddressControllerTest
     {
         var customer=_fixture.CreateCustomer();
         var address = _fixture.GetAddress();
-        var controller = _fixture.GetBrokenAddressController();
+        var controller = _fixture.GetAltAddressController();
 
         var result = controller.Delete(address.AddressId);
 
@@ -152,11 +152,83 @@ public class AddressControllerTest
     {
         var customer=_fixture.CreateCustomer();
         var address = _fixture.GetAddress();
-        var controller = _fixture.GetBrokenAddressController();
+        var controller = _fixture.GetAltAddressController();
 
         var result = controller.Update(address);
 
         result.Should().BeAssignableTo<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldGetAddressReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetAltAddressController();
+
+        var result = controller.Get(address.AddressId);
+
+        result.Should().BeAssignableTo<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldGetAddressActionReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetBrokenAddressController();
+
+        var result = controller.Get(address.AddressId);
+
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldCreateAddressActionReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetBrokenAddressController();
+
+        var result = controller.Create(address);
+
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldGetAllAddressesActionReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetBrokenAddressController();
+
+        var result = controller.GetAll();
+
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldUpdateAddressActionReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetBrokenAddressController();
+
+        var result = controller.Update(address);
+
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public void ShouldDeleteAddressActionReturnBadRequestIfServiceError()
+    {
+        var customer=_fixture.CreateCustomer();
+        var address = _fixture.GetAddress();
+        var controller = _fixture.GetBrokenAddressController();
+
+        var result = controller.Delete(address.AddressId);
+
+        result.Should().BeAssignableTo<BadRequestObjectResult>();
     }
 
 }

@@ -40,6 +40,21 @@ public class ControllerTestFixture
         return new AddressController(GetAddressService());
     }
 
+    public CustomerController GetAltCustomerController()
+    {
+        return new CustomerController(GetAltCustomerServiceMock().Object);
+    }
+
+    public NoteController GetAltNoteController()
+    {
+        return new NoteController(GetAltNoteServiceMock().Object);
+    }
+
+    public AddressController GetAltAddressController()
+    {
+        return new AddressController(GetAltAddressServiceMock().Object);
+    }
+
     public CustomerController GetBrokenCustomerController()
     {
         return new CustomerController(GetBrokenCustomerServiceMock().Object);
@@ -104,7 +119,7 @@ public class ControllerTestFixture
         return createdCustomer!;
     }
 
-    public Mock<IService<Customer>> GetCustomerServiceMock()
+    /*public Mock<IService<Customer>> GetCustomerServiceMock()
     {
         var customer = GetCustomer();
 
@@ -144,9 +159,9 @@ public class ControllerTestFixture
         service.Setup(x => x.Update(note)).Returns(true);
 
         return service;
-    }
+    }*/
 
-    public Mock<IService<Customer>> GetBrokenCustomerServiceMock()
+    public Mock<IService<Customer>> GetAltCustomerServiceMock()
     {
         var customer = GetCustomer();
 
@@ -160,7 +175,7 @@ public class ControllerTestFixture
         return service;
     }
 
-    public Mock<IService<Address>> GetBrokenAddressServiceMock()
+    public Mock<IService<Address>> GetAltAddressServiceMock()
     {
         var address = GetAddress();
 
@@ -174,7 +189,7 @@ public class ControllerTestFixture
         return service;
     }
 
-    public Mock<IService<Note>> GetBrokenNoteServiceMock()
+    public Mock<IService<Note>> GetAltNoteServiceMock()
     {
         var note = GetNote();
 
@@ -184,6 +199,46 @@ public class ControllerTestFixture
         service.Setup(x => x.Create(note)).Returns((Note?) null);
         service.Setup(x => x.Delete(note.Id)).Returns(false);
         service.Setup(x => x.Update(note)).Returns(false);
+
+        return service;
+    }
+
+    public Mock<IService<Customer>> GetBrokenCustomerServiceMock()
+    {
+        var customer = GetCustomer();
+
+        var service = new Mock<IService<Customer>>();
+        service.Setup(x => x.Get(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.GetAll()).Throws<Exception>();
+        service.Setup(x => x.Create(It.IsAny<Customer>())).Throws<Exception>();
+        service.Setup(x => x.Delete(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.Update(It.IsAny<Customer>())).Throws<Exception>();
+
+        return service;
+    }
+
+    public Mock<IService<Address>> GetBrokenAddressServiceMock()
+    {
+        var service = new Mock<IService<Address>>();
+        service.Setup(x => x.Get(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.GetAll()).Throws<Exception>();
+        service.Setup(x => x.Create(It.IsAny<Address>())).Throws<Exception>();
+        service.Setup(x => x.Delete(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.Update(It.IsAny<Address>())).Throws<Exception>();
+
+        return service;
+    }
+
+    public Mock<IService<Note>> GetBrokenNoteServiceMock()
+    {
+        var note = GetNote();
+
+        var service = new Mock<IService<Note>>();
+        service.Setup(x => x.Get(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.GetAll()).Throws<Exception>();
+        service.Setup(x => x.Create(It.IsAny<Note>())).Throws<Exception>();
+        service.Setup(x => x.Delete(It.IsAny<int>())).Throws<Exception>();
+        service.Setup(x => x.Update(It.IsAny<Note>())).Throws<Exception>();
 
         return service;
     }

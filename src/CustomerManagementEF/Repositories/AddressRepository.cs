@@ -12,115 +12,55 @@ namespace CustomerManagementEF.Repositories
 
         public Address? Create(Address entity)
         {
-            try
-            {
-                var createdEntity = Context.Addresses.Add(entity);
-                Context.SaveChanges();
-                return createdEntity;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
+            var createdEntity = Context.Addresses.Add(entity);
+            Context.SaveChanges();
+            return createdEntity;
         }
 
         public Address? Read(int entityId)
         {
-            try
+            var entities = Context.Addresses.Where(x => x.AddressId == entityId).ToList();
+            if (entities.Count > 0)
             {
-                var entities = Context.Addresses.Where(x => x.AddressId == entityId).ToList();
-                if (entities.Count > 0)
-                {
-                    return entities[0];
-                }
-                return null;
+                return entities[0];
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
+            return null;
         }
 
         public List<Address> ReadAll()
         {
-            try
-            {
-                return Context.Addresses.ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return new List<Address>();
-            }
+            return Context.Addresses.ToList();
         }
 
         public List<Address> ReadAll(int entityId)
         {
-            try
-            {
-                return Context.Addresses.Where(x => x.CustomerId == entityId).ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return new List<Address>();
-            }
+            return Context.Addresses.Where(x => x.CustomerId == entityId).ToList();
         }
 
         public bool Update(Address entity)
         {
-            try
-            {
-                Context.Entry(entity).State = EntityState.Modified;
-                Context.SaveChanges();
+            Context.Entry(entity).State = EntityState.Modified;
+            Context.SaveChanges();
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            return true;
         }
 
         public bool Delete(int entityId)
         {
-            try
-            {
-                Context.Addresses.Remove(Read(entityId) ?? throw new InvalidOperationException());
-                Context.SaveChanges();
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            Context.Addresses.Remove(Read(entityId) ?? throw new InvalidOperationException());
+            Context.SaveChanges();
+            return true;
         }
 
         public bool DeleteAll()
         {
-            try
+            var entitiesToDelete = Context.Addresses.ToList();
+            foreach (var customer in entitiesToDelete)
             {
-                var entitiesToDelete = Context.Addresses.ToList();
-                foreach (var customer in entitiesToDelete)
-                {
-                    Context.Addresses.Remove(customer);
-                }
-
-                Context.SaveChanges();
-                return true;
+                Context.Addresses.Remove(customer);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
-            }
+            Context.SaveChanges();
+            return true;
         }
-
-
     }
 }

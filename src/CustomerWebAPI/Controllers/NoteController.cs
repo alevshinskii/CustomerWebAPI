@@ -18,46 +18,79 @@ namespace CustomerWebAPI.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var notes = _service.GetAll();
-            if (notes.Any())
-                return Ok(notes);
-            return NotFound();
+            try
+            {
+                var notes = _service.GetAll();
+                if (notes.Any())
+                    return Ok(notes);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPost]
         public IActionResult Create(Note note)
         {
-            var createdNote = _service.Create(note);
-
-            if (createdNote != null)
-                return Ok(createdNote);
-            return NoContent();
+            try
+            {
+                var createdNote = _service.Create(note);
+                if (createdNote != null)
+                    return Ok(createdNote);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            var note = _service.Get(id);
-
-            if (note != null)
-                return Ok(note);
-            return NotFound(id);
+            try
+            {
+                var note = _service.Get(id);
+                if (note != null)
+                    return Ok(note);
+                return NotFound(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            if (_service.Delete(id))
-                return Ok(id);
-            return NotFound(id);
+            try
+            {
+                if (_service.Delete(id))
+                    return Ok(id);
+                return NotFound(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPut("{id:int}")]
         public IActionResult Update(Note note)
         {
-            if (_service.Update(note))
-                return Ok(note);
-            return NotFound("Can't find entity in database");
+            try
+            {
+                if (_service.Update(note))
+                    return Ok(note);
+                return NotFound(note.Id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }
